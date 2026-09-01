@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  passwordHash  String?
+  phoneNumber   String?
+  unspentPoints Int            @default(0)
+  createdAt     DateTime       @default(now())
+
+  sessionTokens SessionToken[]
+  completions   Completion[]
+  storeDeposits StoreDeposit[]
+  storeVisits   StoreVisit[]
+  storesAdded   Store[]
+}
+
+model SessionToken {
+  token     String   @id @default(uuid())
+  teamId    Int?
+  createdAt DateTime @default(now())
+
+  team Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+}
+
+model Challenge {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  pointValue   Int
+  mediaRequired Boolean @default(false)
+  repeatable   Boolean  @default(false)
+  repeatLimit  Int?
+  sortOrder    Int      @default(0)
+
+  completions Completion[]
+}
+
+model Store {
+  id            Int      @id @default(autoincrement())
+  name          String
+  location      String
+  addedByTeamId Int?
+  createdAt     DateTime @default(now())
+
+  addedByTeam Team?          @relation(fields: [addedByTeamId], references: [id], onDelete: SetNull)
+  deposits    StoreDeposit[]
+  visits      StoreVisit[]
+}
+
+model StoreVisit {
+  id        Int      @id @default(autoincrement())
+  storeId   Int
+  teamId    Int
+  createdAt DateTime @default(now())
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, teamId])
+}
+
+model Completion {
+  id          Int      @id @default(autoincrement())
+  teamId      Int
+  challengeId Int
+  timestamp   DateTime @default(now())
+  mediaUrl    String?
+
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+}
+
+model StoreDeposit {
+  id      Int @id @default(autoincrement())
+  storeId Int
+  teamId  Int
+  points  Int @default(0)
+
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@unique([storeId, teamId])
+}

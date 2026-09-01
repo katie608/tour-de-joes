@@ -1,0 +1,8 @@
+{
+  "name": "tour-de-joes",
+  "private": true,
+  "workspaces": [
+    "server",
+    "client"
+  ]
+}
