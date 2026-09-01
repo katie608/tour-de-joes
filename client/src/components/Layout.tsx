@@ -7,6 +7,7 @@ export function ProtectedLayout() {
 
   if (loading) return <div className="page-loading">Loading...</div>;
   if (!team && !isAdmin) return <Navigate to="/login" replace />;
+  if (isAdmin && window.location.pathname === "/") return <Navigate to="/admin" replace />;
 
   return (
     <div className="app-shell">

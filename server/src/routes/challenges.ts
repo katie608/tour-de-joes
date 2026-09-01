@@ -10,7 +10,8 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 150
 router.use(requireAuth);
 
 router.get("/", async (req, res) => {
-  const teamId = req.team!.id;
+  if (!req.team) return res.status(403).json({ error: "Team access required" });
+  const teamId = req.team.id;
   const challenges = await prisma.challenge.findMany({ orderBy: { sortOrder: "asc" } });
   const completions = await prisma.completion.groupBy({
     by: ["challengeId"],
@@ -45,7 +46,8 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  const teamId = req.team!.id;
+  if (!req.team) return res.status(403).json({ error: "Team access required" });
+  const teamId = req.team.id;
   const challenge = await prisma.challenge.findUnique({ where: { id: Number(req.params.id) } });
   if (!challenge) return res.status(404).json({ error: "Challenge not found" });
 
