@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import fs from "fs";
-import { UPLOAD_ROOT } from "./storage";
 
 import authRoutes from "./routes/auth";
 import challengeRoutes from "./routes/challenges";
@@ -17,8 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-fs.mkdirSync(UPLOAD_ROOT, { recursive: true });
-app.use("/uploads", express.static(UPLOAD_ROOT));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/challenges", challengeRoutes);

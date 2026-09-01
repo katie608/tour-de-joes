@@ -78,7 +78,7 @@ router.post("/:id/complete", upload.single("media"), async (req, res) => {
 
   let mediaUrl: string | null = null;
   if (req.file) {
-    mediaUrl = saveUpload(challenge.title, req.team!.name, req.file);
+    mediaUrl = await saveUpload(challenge.title, req.team!.name, req.file);
   }
 
   const [completion] = await prisma.$transaction([

@@ -1,27 +1,40 @@
-import fs from "fs";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import path from "path";
 
-const UPLOAD_ROOT = path.join(__dirname, "..", "uploads");
+const BUCKET = process.env.S3_BUCKET!;
+const REGION = process.env.AWS_REGION ?? "us-east-1";
+
+const s3 = new S3Client({ region: REGION });
 
 function sanitize(name: string): string {
   return name.replace(/[^a-zA-Z0-9_-]/g, "_");
 }
 
 /**
- * Saves an uploaded file under uploads/{challengeFolder}/{teamname}_{timestamp}.{ext}
- * and returns a URL path served by the /uploads static route.
- * Swap this implementation for an S3 SDK upload to move to production.
+ * Uploads a file to S3 under {challengeFolder}/{teamname}_{timestamp}.{ext}
+ * and returns the public HTTPS URL.
  */
-export function saveUpload(challengeTitle: string, teamName: string, file: Express.Multer.File): string {
+export async function saveUpload(
+  challengeTitle: string,
+  teamName: string,
+  file: Express.Multer.File
+): Promise<string> {
   const folder = sanitize(challengeTitle);
-  const dir = path.join(UPLOAD_ROOT, folder);
-  fs.mkdirSync(dir, { recursive: true });
-
   const ext = path.extname(file.originalname);
   const filename = `${sanitize(teamName)}_${Date.now()}${ext}`;
-  fs.writeFileSync(path.join(dir, filename), file.buffer);
+  const key = `${folder}/${filename}`;
 
-  return `/uploads/${folder}/${filename}`;
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    })
+  );
+
+  return `https://${BUCKET}.s3.${REGION}.amazonaws.com/${key}`;
 }
 
-export { UPLOAD_ROOT };
+// kept for index.ts import — no longer used for local serving
+export const UPLOAD_ROOT = "";
