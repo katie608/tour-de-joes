@@ -12,7 +12,7 @@ router.post("/register", async (req, res) => {
     return res.status(400).json({ error: "Team name is required" });
   }
 
-  const existing = await prisma.team.findUnique({ where: { name: name.trim() } });
+  const existing = await prisma.team.findFirst({ where: { name: { equals: name.trim(), mode: "insensitive" } } });
   if (existing) {
     return res.status(409).json({ error: "A team with that name already exists" });
   }
@@ -39,7 +39,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ error: "Team name is required" });
   }
 
-  const team = await prisma.team.findUnique({ where: { name: name.trim() } });
+  const team = await prisma.team.findFirst({ where: { name: { equals: name.trim(), mode: "insensitive" } } });
   if (!team) {
     return res.status(401).json({ error: "Team not found" });
   }

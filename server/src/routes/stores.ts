@@ -20,13 +20,17 @@ router.get("/", async (req, res) => {
 
   const result = stores.map((store) => {
     const status = computeStoreStatus(store.id, store.deposits);
+    const myDeposit = teamId ? (store.deposits.find((d) => d.teamId === teamId)?.points ?? 0) : 0;
+    const gapToOvertake = status.controllingTeamId !== null && status.controllingTeamId !== teamId
+      ? status.topPoints - myDeposit + 1
+      : status.gapToOvertake;
     return {
       id: store.id,
       name: store.name,
       location: store.location,
       controllingTeamName: status.controllingTeamName,
       topPoints: status.topPoints,
-      gapToOvertake: status.gapToOvertake,
+      gapToOvertake,
       visited: teamId ? (store.visits as { teamId: number }[]).length > 0 : false,
     };
   });
@@ -47,6 +51,10 @@ router.get("/:id", async (req, res) => {
   if (!store) return res.status(404).json({ error: "Store not found" });
 
   const status = computeStoreStatus(store.id, store.deposits);
+  const myDeposit = teamId ? (store.deposits.find((d) => d.teamId === teamId)?.points ?? 0) : 0;
+  const gapToOvertake = status.controllingTeamId !== null && status.controllingTeamId !== teamId
+    ? status.topPoints - myDeposit + 1
+    : status.gapToOvertake;
   res.json({
     id: store.id,
     name: store.name,
@@ -54,7 +62,7 @@ router.get("/:id", async (req, res) => {
     deposits: status.deposits,
     controllingTeamName: status.controllingTeamName,
     topPoints: status.topPoints,
-    gapToOvertake: status.gapToOvertake,
+    gapToOvertake,
     visited: teamId ? (store.visits as { teamId: number }[]).length > 0 : false,
   });
 });
