@@ -24,12 +24,12 @@ export default function ChallengeDetailPage() {
     setSubmitting(true);
     try {
       let body: FormData | undefined;
-      if (challenge!.mediaRequired) {
-        if (!file) {
-          setError("Please choose a photo or video to upload.");
-          setSubmitting(false);
-          return;
-        }
+      if (challenge!.mediaRequired && !file) {
+        setError("Please choose a photo or video to upload.");
+        setSubmitting(false);
+        return;
+      }
+      if (file) {
         body = new FormData();
         body.append("media", file);
       }
@@ -57,8 +57,13 @@ export default function ChallengeDetailPage() {
           : ""}
       </p>
 
-      {challenge.mediaRequired && !challenge.isComplete && (
-        <input type="file" accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+      {!challenge.isComplete && (
+        <div style={{ margin: "1rem 0" }}>
+          <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: 500, fontSize: "0.9rem" }}>
+            {challenge.mediaRequired ? "Photo / Video (required)" : "Photo / Video (optional)"}
+          </label>
+          <input type="file" accept="image/*,video/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+        </div>
       )}
 
       {error && <div className="error-text">{error}</div>}
