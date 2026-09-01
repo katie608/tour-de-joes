@@ -22,7 +22,6 @@ export function ProtectedLayout() {
             </NavLink>
             <NavLink to="/stores">Stores</NavLink>
             <NavLink to="/feed">Feed</NavLink>
-            <NavLink to="/add-store">Add Store</NavLink>
             <NavLink to="/scores">Scores</NavLink>
           </>
         )}
