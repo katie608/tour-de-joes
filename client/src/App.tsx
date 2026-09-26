@@ -9,6 +9,7 @@ import FeedPage from "./pages/FeedPage";
 import AddStorePage from "./pages/AddStorePage";
 import ScoresPage from "./pages/ScoresPage";
 import AdminPage from "./pages/AdminPage";
+import RulesPage from "./pages/RulesPage";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         <Route path="/add-store" element={<AddStorePage />} />
         <Route path="/scores" element={<ScoresPage />} />
         <Route path="/admin" element={<AdminPage />} />
+        <Route path="/rules" element={<RulesPage />} />
       </Route>
     </Routes>
   );

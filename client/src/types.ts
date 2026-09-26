@@ -30,15 +30,17 @@ export interface StoreDeposit {
 export interface StoreDetail extends StoreSummary {
   deposits: StoreDeposit[];
   visited: boolean;
+  controllerSelfieUrl: string | null;
 }
 
 export interface FeedItem {
-  id: number;
+  id: string;
   mediaUrl: string;
   teamName: string;
   teamId: number;
-  challengeName: string;
-  challengeId: number;
+  label: string;
+  labelId: number;
+  type: "challenge" | "visit";
   timestamp: string;
 }
 

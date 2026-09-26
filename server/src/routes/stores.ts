@@ -1,8 +1,12 @@
 import { Router } from "express";
+import multer from "multer";
 import { prisma } from "../db";
 import { requireAuth } from "../middleware/auth";
 import { computeStoreStatus } from "../lib/storeStatus";
 import { sendSms } from "../lib/sms";
+import { saveUpload } from "../storage";
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 150 * 1024 * 1024 } });
 
 const router = Router();
 
@@ -45,7 +49,7 @@ router.get("/:id", async (req, res) => {
     where: { id: storeId },
     include: {
       deposits: { include: { team: true } },
-      visits: teamId ? { where: { teamId } } : false,
+      visits: { include: { team: true } },
     },
   });
   if (!store) return res.status(404).json({ error: "Store not found" });
@@ -55,21 +59,31 @@ router.get("/:id", async (req, res) => {
   const gapToOvertake = status.controllingTeamId !== null && status.controllingTeamId !== teamId
     ? status.topPoints - myDeposit + 1
     : status.gapToOvertake;
+
+  const controllerVisit = status.controllingTeamId
+    ? store.visits.find((v) => v.teamId === status.controllingTeamId)
+    : null;
+
   res.json({
     id: store.id,
     name: store.name,
     location: store.location,
     deposits: status.deposits,
     controllingTeamName: status.controllingTeamName,
+    controllerSelfieUrl: controllerVisit?.mediaUrl ?? null,
     topPoints: status.topPoints,
     gapToOvertake,
-    visited: teamId ? (store.visits as { teamId: number }[]).length > 0 : false,
+    visited: teamId ? store.visits.some((v) => v.teamId === teamId) : false,
   });
 });
 
-router.post("/:id/visit", async (req, res) => {
+router.post("/:id/visit", upload.single("media"), async (req, res) => {
   if (!req.team) {
     return res.status(403).json({ error: "Only teams can check in" });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: "A team selfie photo is required to check in" });
   }
 
   const storeId = Number(req.params.id);
@@ -83,12 +97,14 @@ router.post("/:id/visit", async (req, res) => {
     return res.status(409).json({ error: "Already checked in to this store" });
   }
 
+  const mediaUrl = await saveUpload(`Store Check-In - ${store.name}`, req.team.name, req.file);
+
   await prisma.$transaction([
-    prisma.storeVisit.create({ data: { storeId, teamId: req.team.id } }),
+    prisma.storeVisit.create({ data: { storeId, teamId: req.team.id, mediaUrl } }),
     prisma.team.update({ where: { id: req.team.id }, data: { unspentPoints: { increment: 10 } } }),
   ]);
 
-  res.status(201).json({ visited: true, pointsAwarded: 10 });
+  res.status(201).json({ visited: true, pointsAwarded: 10, mediaUrl });
 });
 
 router.post("/", async (req, res) => {

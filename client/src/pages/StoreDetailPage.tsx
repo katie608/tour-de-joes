@@ -27,6 +27,7 @@ export default function StoreDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [showDepositConfirm, setShowDepositConfirm] = useState(false);
   const [checkInMsg, setCheckInMsg] = useState<string | null>(null);
+  const [selfieFile, setSelfieFile] = useState<File | null>(null);
 
   function load() {
     apiFetch(`/stores/${id}`).then(setStore);
@@ -71,10 +72,17 @@ export default function StoreDetailPage() {
   }
 
   async function handleCheckIn() {
+    if (!selfieFile) {
+      setCheckInMsg("Please choose a team selfie photo first.");
+      return;
+    }
     setCheckInMsg(null);
+    const body = new FormData();
+    body.append("media", selfieFile);
     try {
-      await apiFetch(`/stores/${id}/visit`, { method: "POST" });
+      await apiFetch(`/stores/${id}/visit`, { method: "POST", body });
       setCheckInMsg("+10 points awarded for visiting!");
+      setSelfieFile(null);
       load();
       await refresh();
     } catch (err) {
@@ -103,13 +111,35 @@ export default function StoreDetailPage() {
           : "Unclaimed — deposit points to take control!"}
       </p>
 
+      {store.controllerSelfieUrl && (
+        <div style={{ margin: "0.75rem 0" }}>
+          <img
+            src={store.controllerSelfieUrl}
+            alt={`${store.controllingTeamName} selfie`}
+            style={{ width: "100%", maxHeight: 220, objectFit: "cover", borderRadius: 10 }}
+          />
+          <div className="card__meta" style={{ marginTop: 4 }}>📍 {store.controllingTeamName}'s arrival selfie</div>
+        </div>
+      )}
+
       <div style={{ marginBottom: 16 }}>
         {store.visited ? (
           <div style={{ color: "#2e7d32", fontWeight: 600 }}>✓ You've visited this store (+10 pts already awarded)</div>
         ) : (
-          <button className="btn btn--secondary" onClick={handleCheckIn}>
-            Check In Here (+10 pts)
-          </button>
+          <div>
+            <label style={{ display: "block", marginBottom: "0.4rem", fontWeight: 500, fontSize: "0.9rem" }}>
+              Team selfie (required to check in)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelfieFile(e.target.files?.[0] ?? null)}
+              style={{ marginBottom: "0.5rem" }}
+            />
+            <button className="btn btn--secondary" onClick={handleCheckIn}>
+              Check In Here (+10 pts)
+            </button>
+          </div>
         )}
         {checkInMsg && <div className="card__meta" style={{ marginTop: 6 }}>{checkInMsg}</div>}
       </div>

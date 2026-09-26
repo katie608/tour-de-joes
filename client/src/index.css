@@ -265,6 +265,7 @@ input, textarea {
   border-radius: 6px;
   background: #ddd;
   cursor: pointer;
+  position: relative;
 }
 
 .feed-grid__thumb img,

@@ -18,12 +18,11 @@ export function ProtectedLayout() {
       <nav className="bottom-nav">
         {!isAdmin && (
           <>
-            <NavLink to="/" end>
-              Challenges
-            </NavLink>
+            <NavLink to="/" end>Challenges</NavLink>
             <NavLink to="/stores">Stores</NavLink>
             <NavLink to="/feed">Feed</NavLink>
             <NavLink to="/scores">Scores</NavLink>
+            <NavLink to="/rules">Rules</NavLink>
           </>
         )}
         {isAdmin && <NavLink to="/admin">Admin</NavLink>}
