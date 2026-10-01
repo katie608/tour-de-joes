@@ -59,14 +59,6 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required={mode === "admin"}
         />
-        {mode === "register" && (
-          <input
-            type="tel"
-            placeholder="Phone number for store alerts (optional)"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-        )}
         {error && <div className="error-text">{error}</div>}
         <button className="btn" type="submit" disabled={busy}>
           {mode === "login" ? "Log In" : mode === "register" ? "Create Team" : "Admin Log In"}
