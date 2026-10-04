@@ -229,6 +229,15 @@ input, textarea {
   border-top-color: #f5c2c2;
 }
 
+.store-card__control--mine {
+  background: #e8f5e9;
+  border-top-color: #a5d6a7;
+}
+
+.store-card__control--mine .store-card__controller {
+  color: #2e7d32;
+}
+
 .store-card__controller {
   font-weight: 700;
   color: #c8102e;

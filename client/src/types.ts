@@ -16,6 +16,7 @@ export interface StoreSummary {
   name: string;
   location: string;
   controllingTeamName: string | null;
+  controlledByMe: boolean;
   topPoints: number;
   gapToOvertake: number | null;
   visited: boolean;

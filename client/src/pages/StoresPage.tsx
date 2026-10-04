@@ -10,13 +10,18 @@ export default function StoresPage() {
 
   function load() {
     apiFetch("/stores")
-      .then(setStores)
+      .then((data: StoreSummary[]) => {
+        const sorted = [...data].sort((a, b) => {
+          if (a.controlledByMe !== b.controlledByMe) return a.controlledByMe ? -1 : 1;
+          if (!!a.controllingTeamName !== !!b.controllingTeamName) return a.controllingTeamName ? 1 : -1;
+          return 0;
+        });
+        setStores(sorted);
+      })
       .finally(() => setLoading(false));
   }
 
-  useEffect(() => {
-    load();
-  }, []);
+  useEffect(() => { load(); }, []);
   useInterval(load, 30000);
 
   if (loading) return <p>Loading stores...</p>;
@@ -40,11 +45,13 @@ export default function StoresPage() {
               </div>
               <div className="card__meta">{s.location}</div>
             </div>
-            <div className={`store-card__control ${s.controllingTeamName ? "store-card__control--claimed" : ""}`}>
-              {s.controllingTeamName ? (
+            <div className={`store-card__control ${s.controlledByMe ? "store-card__control--mine" : s.controllingTeamName ? "store-card__control--claimed" : ""}`}>
+              {s.controlledByMe ? (
+                <span className="store-card__controller">⭐ You control this store</span>
+              ) : s.controllingTeamName ? (
                 <>
                   <span className="store-card__controller">🏆 {s.controllingTeamName}</span>
-                  <span className="store-card__gap">{s.gapToOvertake} pt{s.gapToOvertake === 1 ? "" : "s"} to overtake</span>
+                  {s.gapToOvertake != null && <span className="store-card__gap">{s.gapToOvertake} pt{s.gapToOvertake === 1 ? "" : "s"} to overtake</span>}
                 </>
               ) : (
                 <span className="store-card__unclaimed">Unclaimed — be the first!</span>

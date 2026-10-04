@@ -29,13 +29,15 @@ router.get("/", async (req, res) => {
     const gapToOvertake = status.controllingTeamId !== null && status.controllingTeamId !== teamId
       ? status.topPoints - myDeposit + 1
       : status.gapToOvertake;
+    const controlledByMe = !!teamId && status.controllingTeamId === teamId;
     return {
       id: store.id,
       name: store.name,
       location: store.location,
       controllingTeamName: status.controllingTeamName,
+      controlledByMe,
       topPoints: status.topPoints,
-      gapToOvertake,
+      gapToOvertake: controlledByMe ? null : gapToOvertake,
       visited: teamId ? (store.visits as { teamId: number }[]).length > 0 : false,
     };
   });
