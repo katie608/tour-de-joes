@@ -86,11 +86,11 @@ async function main() {
       },
       {
         title: "Fix a Flat",
-        description: "Do not intentionally cause a flat tire. However if you get one and fix it without professional help, you get 5 points! If you help someone else (other team or strangers) fix their flat (as long as you didn't cause it), your team also gets 5 points. Photo required. No limit to occurrences...unfortunately.",
+        description: "Do not intentionally cause a flat tire. However if you get one and fix it without professional help, you get 5 points! If you help someone else (other team or strangers) fix their flat (as long as you didn't cause it), your team also gets 5 points. Photo required.",
         pointValue: 5,
         mediaRequired: true,
         repeatable: true,
-        repeatLimit: null,
+        repeatLimit: 100,
         sortOrder: 10,
       },
       {
@@ -204,8 +204,7 @@ async function main() {
         description: "One teammate buys an item. Another teammate must taste the item while blindfolded, then enter the store and identify the exact same item on the first try (organic apple and apple are different). Can be re-attempted at the next store with a different item if failed.",
         pointValue: 3,
         mediaRequired: false,
-        repeatable: true,
-        repeatLimit: null,
+        repeatable: false,
         sortOrder: 24,
       },
       {

@@ -25,6 +25,7 @@ export interface StoreDeposit {
   teamId: number;
   teamName: string;
   points: number;
+  updatedAt?: string;
 }
 
 export interface StoreDetail extends StoreSummary {
@@ -49,6 +50,7 @@ export interface ScoreEntry {
   teamName: string;
   storesControlled: number;
   unspentPoints: number;
+  totalPointsEarned: number;
   rank: number;
   isLeader: boolean;
 }

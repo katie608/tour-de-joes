@@ -107,7 +107,7 @@ export default function StoreDetailPage() {
       <p className="card__meta">{store.location}</p>
       <p>
         {store.controllingTeamName
-          ? `Controlled by ${store.controllingTeamName} (${store.topPoints} pts · ${store.gapToOvertake} to overtake)`
+          ? `Controlled by ${store.controllingTeamName} (${store.topPoints} pts${team && store.deposits.find((d) => d.teamId === team.id)?.points === store.topPoints ? "" : ` · ${store.gapToOvertake} to overtake`})`
           : "Unclaimed — deposit points to take control!"}
       </p>
 
@@ -149,7 +149,10 @@ export default function StoreDetailPage() {
       {store.deposits.map((d) => (
         <div key={d.teamId} className="deposit-row">
           <span>{d.teamName}</span>
-          <span>{d.points} pts</span>
+          <span style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 2 }}>
+            <span>{d.points} pts</span>
+            {d.updatedAt && <span style={{ fontSize: "0.75rem", color: "#888" }}>{new Date(d.updatedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>}
+          </span>
         </div>
       ))}
 

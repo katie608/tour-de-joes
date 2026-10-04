@@ -80,10 +80,11 @@ model Completion {
 }
 
 model StoreDeposit {
-  id      Int @id @default(autoincrement())
-  storeId Int
-  teamId  Int
-  points  Int @default(0)
+  id        Int      @id @default(autoincrement())
+  storeId   Int
+  teamId    Int
+  points    Int      @default(0)
+  updatedAt DateTime @updatedAt
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
   team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)

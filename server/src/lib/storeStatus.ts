@@ -4,6 +4,7 @@ export interface StoreDepositInfo {
   teamId: number;
   teamName: string;
   points: number;
+  updatedAt?: Date;
 }
 
 export interface StoreStatus {
@@ -22,7 +23,7 @@ export interface StoreStatus {
  */
 export function computeStoreStatus(
   storeId: number,
-  deposits: { id: number; teamId: number; points: number; team: { name: string } }[]
+  deposits: { id: number; teamId: number; points: number; updatedAt?: Date; team: { name: string } }[]
 ): StoreStatus {
   const sorted = [...deposits]
     .filter((d) => d.points > 0)
@@ -32,6 +33,7 @@ export function computeStoreStatus(
     teamId: d.teamId,
     teamName: d.team.name,
     points: d.points,
+    updatedAt: d.updatedAt,
   }));
 
   if (sorted.length === 0) {
