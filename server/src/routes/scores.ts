@@ -11,11 +11,6 @@ router.get("/", async (_req, res) => {
   const teams = await prisma.team.findMany();
   const stores = await prisma.store.findMany({ include: { deposits: { include: { team: true } } } });
 
-  const completionPoints = await prisma.completion.groupBy({
-    by: ["teamId"],
-    _sum: { challenge: false } as never,
-  });
-
   // Sum points from completions per team
   const completionRows = await prisma.$queryRaw<{ teamId: number; total: bigint }[]>`
     SELECT c."teamId", SUM(ch."pointValue") as total
