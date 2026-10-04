@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/auth";
 import { computeStoreStatus } from "../lib/storeStatus";
 import { sendSms } from "../lib/sms";
 import { saveUpload } from "../storage";
+import { requireGameActive } from "../lib/gameState";
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 150 * 1024 * 1024 } });
 
@@ -77,7 +78,7 @@ router.get("/:id", async (req, res) => {
   });
 });
 
-router.post("/:id/visit", upload.single("media"), async (req, res) => {
+router.post("/:id/visit", requireGameActive, upload.single("media"), async (req, res) => {
   if (!req.team) {
     return res.status(403).json({ error: "Only teams can check in" });
   }
@@ -123,7 +124,7 @@ router.post("/", async (req, res) => {
   res.status(201).json(store);
 });
 
-router.post("/:id/deposit", async (req, res) => {
+router.post("/:id/deposit", requireGameActive, async (req, res) => {
   if (!req.team) {
     return res.status(403).json({ error: "Only teams can deposit points" });
   }

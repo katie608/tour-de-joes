@@ -1,10 +1,26 @@
 import { Router } from "express";
 import { prisma } from "../db";
 import { requireAdmin } from "../middleware/auth";
+import { getGameState, setGameState, GameState } from "../lib/gameState";
 
 const router = Router();
 
 router.use(requireAdmin);
+
+// --- Game state ---
+
+router.get("/game-state", async (_req, res) => {
+  res.json({ state: await getGameState() });
+});
+
+router.post("/game-state", async (req, res) => {
+  const { state } = req.body as { state?: string };
+  if (!["pending", "active", "ended"].includes(state ?? "")) {
+    return res.status(400).json({ error: "state must be pending, active, or ended" });
+  }
+  await setGameState(state as GameState);
+  res.json({ state });
+});
 
 // --- Stores ---
 

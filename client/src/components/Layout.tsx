@@ -1,6 +1,7 @@
 import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import TeamStatusBar from "./TeamStatusBar";
+import GameStateBanner from "./GameStateBanner";
 
 export function ProtectedLayout() {
   const { team, isAdmin, loading } = useAuth();
@@ -11,6 +12,7 @@ export function ProtectedLayout() {
 
   return (
     <div className="app-shell">
+      {!isAdmin && <GameStateBanner />}
       <TeamStatusBar />
       <main className="app-content">
         <Outlet />

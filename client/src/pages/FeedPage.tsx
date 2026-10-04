@@ -77,7 +77,8 @@ export default function FeedPage() {
             ) : (
               <img src={active.mediaUrl} alt={active.label} style={{ maxWidth: "100%", maxHeight: "65vh", borderRadius: "10px 10px 0 0", display: "block" }} />
             )}
-            <div className="media-modal__info">
+            <div className="media-modal__info" style={{ position: "relative" }}>
+              <button onClick={() => setActive(null)} style={{ position: "absolute", top: -8, right: 0, background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#888" }}>✕</button>
               <div className="card__title">{active.label}</div>
               <div className="card__meta">{active.type === "visit" ? "📍 Store check-in" : "🏆 Challenge"} · {active.teamName}</div>
               <div className="card__meta">{new Date(active.timestamp).toLocaleString()}</div>

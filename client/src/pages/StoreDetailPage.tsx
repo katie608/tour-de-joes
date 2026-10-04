@@ -8,6 +8,7 @@ function ConfirmDialog({ message, onConfirm, onCancel }: { message: string; onCo
   return (
     <div className="confirm-overlay" onClick={onCancel}>
       <div className="confirm-box" onClick={(e) => e.stopPropagation()}>
+        <button onClick={onCancel} style={{ position: "absolute", top: 8, right: 12, background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#888" }}>✕</button>
         <p>{message}</p>
         <div className="confirm-box__buttons">
           <button className="btn btn--secondary" onClick={onCancel}>No, cancel</button>

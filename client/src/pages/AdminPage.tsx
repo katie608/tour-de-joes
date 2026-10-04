@@ -30,12 +30,14 @@ interface CompletionRow {
 }
 
 type Tab = "teams" | "stores" | "completions" | "danger";
+type GameState = "pending" | "active" | "ended";
 
 export default function AdminPage() {
   const [tab, setTab] = useState<Tab>("teams");
   const [teams, setTeams] = useState<TeamRow[]>([]);
   const [stores, setStores] = useState<StoreRow[]>([]);
   const [completions, setCompletions] = useState<CompletionRow[]>([]);
+  const [gameState, setGameStateVal] = useState<GameState>("pending");
   const [error, setError] = useState<string | null>(null);
   const [newStoreName, setNewStoreName] = useState("");
   const [newStoreLocation, setNewStoreLocation] = useState("");
@@ -54,11 +56,25 @@ export default function AdminPage() {
     apiFetch("/admin/completions").then(setCompletions).catch(() => {});
   }
 
+  function loadGameState() {
+    apiFetch("/admin/game-state").then((d) => setGameStateVal(d.state)).catch(() => {});
+  }
+
   useEffect(() => {
     loadTeams();
     loadStores();
     loadCompletions();
+    loadGameState();
   }, []);
+
+  async function setGameState(state: GameState) {
+    const labels: Record<GameState, string> = { pending: "reset to Pending", active: "Start", ended: "End" };
+    if (!window.confirm(`${labels[state]} the game?`)) return;
+    await act(async () => {
+      await apiFetch("/admin/game-state", { method: "POST", body: JSON.stringify({ state }) });
+      setGameStateVal(state);
+    });
+  }
 
   async function act(fn: () => Promise<void>) {
     setError(null);
@@ -161,6 +177,18 @@ export default function AdminPage() {
       <h2 style={{ marginBottom: "1rem" }}>Admin Panel</h2>
 
       {error && <div className="error-text" style={{ marginBottom: "1rem" }}>{error}</div>}
+
+      <div className="card" style={{ marginBottom: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+        <div>
+          <span style={{ fontWeight: 600 }}>Game: </span>
+          <span style={{ color: gameState === "active" ? "#2e7d32" : gameState === "ended" ? "#c62828" : "#888", fontWeight: 600, textTransform: "capitalize" }}>{gameState}</span>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          {gameState !== "active" && <button className="btn" style={{ background: "#2e7d32", fontSize: "0.85rem" }} onClick={() => setGameState("active")}>Start Game</button>}
+          {gameState === "active" && <button className="btn btn--danger" style={{ fontSize: "0.85rem" }} onClick={() => setGameState("ended")}>End Game</button>}
+          {gameState !== "pending" && <button className="btn btn--secondary" style={{ fontSize: "0.85rem" }} onClick={() => setGameState("pending")}>Reset to Pending</button>}
+        </div>
+      </div>
 
       <div className="tabs" style={{ marginBottom: "1rem" }}>
         <button className={tab === "teams" ? "active" : ""} onClick={() => setTab("teams")}>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import multer from "multer";
 import { prisma } from "../db";
 import { requireAuth } from "../middleware/auth";
+import { requireGameActive } from "../lib/gameState";
 import { saveUpload } from "../storage";
 
 const router = Router();
@@ -59,7 +60,7 @@ router.get("/:id", async (req, res) => {
   res.json({ ...challenge, completedCount, isComplete });
 });
 
-router.post("/:id/complete", upload.single("media"), async (req, res) => {
+router.post("/:id/complete", requireGameActive, upload.single("media"), async (req, res) => {
   const teamId = req.team!.id;
   const challenge = await prisma.challenge.findUnique({ where: { id: Number(req.params.id) } });
   if (!challenge) return res.status(404).json({ error: "Challenge not found" });
