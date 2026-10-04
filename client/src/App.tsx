@@ -10,6 +10,7 @@ import AddStorePage from "./pages/AddStorePage";
 import ScoresPage from "./pages/ScoresPage";
 import AdminPage from "./pages/AdminPage";
 import RulesPage from "./pages/RulesPage";
+import TeamLogPage from "./pages/TeamLogPage";
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/scores" element={<ScoresPage />} />
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/rules" element={<RulesPage />} />
+        <Route path="/scores/team/:id" element={<TeamLogPage />} />
       </Route>
     </Routes>
   );

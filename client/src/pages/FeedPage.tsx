@@ -72,13 +72,13 @@ export default function FeedPage() {
       {active && (
         <div className="media-modal" onClick={() => setActive(null)}>
           <div className="media-modal__inner" onClick={(e) => e.stopPropagation()}>
+            <button onClick={() => setActive(null)} style={{ position: "absolute", top: -36, right: 0, background: "none", border: "none", fontSize: "1.8rem", cursor: "pointer", color: "#fff", lineHeight: 1 }}>✕</button>
             {isVideo(active.mediaUrl) ? (
               <video src={active.mediaUrl} controls autoPlay style={{ maxWidth: "100%", maxHeight: "65vh", borderRadius: "10px 10px 0 0" }} />
             ) : (
               <img src={active.mediaUrl} alt={active.label} style={{ maxWidth: "100%", maxHeight: "65vh", borderRadius: "10px 10px 0 0", display: "block" }} />
             )}
-            <div className="media-modal__info" style={{ position: "relative" }}>
-              <button onClick={() => setActive(null)} style={{ position: "absolute", top: -8, right: 0, background: "none", border: "none", fontSize: "1.3rem", cursor: "pointer", color: "#888" }}>✕</button>
+            <div className="media-modal__info">
               <div className="card__title">{active.label}</div>
               <div className="card__meta">{active.type === "visit" ? "📍 Store check-in" : "🏆 Challenge"} · {active.teamName}</div>
               <div className="card__meta">{new Date(active.timestamp).toLocaleString()}</div>

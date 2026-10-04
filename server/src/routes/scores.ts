@@ -84,6 +84,10 @@ router.get("/team/:id/events", async (req, res) => {
     }),
   ]);
 
+  const latestSelfie = visits
+    .filter((v) => v.mediaUrl)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]?.mediaUrl ?? null;
+
   const events = [
     ...completions.map((c) => ({
       type: "challenge" as const,
@@ -105,7 +109,7 @@ router.get("/team/:id/events", async (req, res) => {
     })),
   ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
-  res.json({ teamName: team.name, events });
+  res.json({ teamName: team.name, latestSelfie, events });
 });
 
 export default router;

@@ -22,4 +22,7 @@
 - Add to alliterative sandwich to generate a random letter link: https://randomwordgenerator.com/letter.php. Also make it repeatable 3x
 - Increase repeatability of take a dam photo to 5x
 - Investigate what happens if you try to submit too long of a video, and maybe create a warning if it fails annoyingly currently
+- Update store list to use addresses (21 stores with full street addresses — see conversation history)
+- Increase Fizz Mile point value (currently 8 pts)
+- First check-in bonus: teams that are first to check into a store should get more points than subsequent check-ins (e.g. 15 pts for first, 10 pts for all others)
 

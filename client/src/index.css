@@ -282,6 +282,7 @@ input, textarea {
   flex-direction: column;
   align-items: center;
   max-width: 90vw;
+  position: relative;
 }
 
 .media-modal__info {
