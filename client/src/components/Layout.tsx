@@ -17,6 +17,7 @@ export function PublicLayout() {
         <div className="public-header__links">
           <NavLink to="/feed">Feed</NavLink>
           <NavLink to="/scores">Scores</NavLink>
+          <NavLink to="/archive">Archive</NavLink>
           {loggedIn ? (
             <NavLink to="/">My Team</NavLink>
           ) : (

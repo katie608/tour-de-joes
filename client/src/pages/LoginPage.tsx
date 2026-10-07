@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { ApiError } from "../api";
 
@@ -7,6 +7,7 @@ type Mode = "login" | "register" | "admin";
 
 export default function LoginPage() {
   const { team, isAdmin, login, register, adminLogin } = useAuth();
+  const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -64,6 +65,11 @@ export default function LoginPage() {
           {mode === "login" ? "Log In" : mode === "register" ? "Create Team" : "Admin Log In"}
         </button>
       </form>
+      <div style={{ textAlign: "center", marginTop: 16 }}>
+        <button className="btn btn--secondary" style={{ width: "auto", padding: "8px 20px", fontSize: "0.9rem" }} onClick={() => navigate("/feed")}>
+          View Mode (spectators)
+        </button>
+      </div>
     </div>
   );
 }

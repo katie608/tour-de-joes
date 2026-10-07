@@ -56,11 +56,13 @@ model Store {
 }
 
 model StoreVisit {
-  id        Int      @id @default(autoincrement())
-  storeId   Int
-  teamId    Int
-  mediaUrl  String?
-  createdAt DateTime @default(now())
+  id         Int       @id @default(autoincrement())
+  storeId    Int
+  teamId     Int
+  mediaUrl   String?
+  createdAt  DateTime  @default(now())
+  archivedAt DateTime?
+  gameLabel  String?
 
   store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
   team  Team  @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -69,11 +71,13 @@ model StoreVisit {
 }
 
 model Completion {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   teamId      Int
   challengeId Int
-  timestamp   DateTime @default(now())
+  timestamp   DateTime  @default(now())
   mediaUrl    String?
+  archivedAt  DateTime?
+  gameLabel   String?
 
   team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
   challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)

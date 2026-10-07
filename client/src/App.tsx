@@ -11,6 +11,7 @@ import ScoresPage from "./pages/ScoresPage";
 import AdminPage from "./pages/AdminPage";
 import RulesPage from "./pages/RulesPage";
 import TeamLogPage from "./pages/TeamLogPage";
+import ArchivePage from "./pages/ArchivePage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/scores" element={<ScoresPage />} />
         <Route path="/scores/team/:id" element={<TeamLogPage />} />
+        <Route path="/archive" element={<ArchivePage />} />
       </Route>
       <Route element={<ProtectedLayout />}>
         <Route path="/" element={<ChallengesPage />} />

@@ -72,15 +72,29 @@ router.post("/teams/:id/reset-points", async (req, res) => {
   res.json({ success: true });
 });
 
-router.post("/reset-game", async (_req, res) => {
+router.post("/reset-game", async (req, res) => {
+  const { gameLabel } = req.body as { gameLabel?: string };
+  const label = gameLabel?.trim() || new Date().getFullYear().toString();
+  const now = new Date();
+
   await prisma.$transaction([
-    prisma.storeVisit.deleteMany(),
+    // Archive completions and visits that have photos before deleting
+    prisma.completion.updateMany({
+      where: { mediaUrl: { not: null }, archivedAt: null },
+      data: { archivedAt: now, gameLabel: label },
+    }),
+    prisma.storeVisit.updateMany({
+      where: { mediaUrl: { not: null }, archivedAt: null },
+      data: { archivedAt: now, gameLabel: label },
+    }),
+    // Delete non-photo records outright
+    prisma.completion.deleteMany({ where: { mediaUrl: null } }),
+    prisma.storeVisit.deleteMany({ where: { mediaUrl: null } }),
     prisma.storeDeposit.deleteMany(),
-    prisma.completion.deleteMany(),
     prisma.sessionToken.deleteMany(),
     prisma.team.deleteMany(),
   ]);
-  res.json({ success: true });
+  res.json({ success: true, gameLabel: label });
 });
 
 // --- Store deposits ---

@@ -9,6 +9,7 @@ import storeRoutes from "./routes/stores";
 import feedRoutes from "./routes/feed";
 import scoreRoutes from "./routes/scores";
 import adminRoutes from "./routes/admin";
+import archiveRoutes from "./routes/archive";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use("/api/stores", storeRoutes);
 app.use("/api/feed", feedRoutes);
 app.use("/api/scores", scoreRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/archive", archiveRoutes);
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.get("/api/game-state", async (_req, res) => res.json({ state: await getGameState() }));

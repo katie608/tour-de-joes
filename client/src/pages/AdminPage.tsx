@@ -159,10 +159,11 @@ export default function AdminPage() {
   }
 
   async function resetGame() {
-    if (!window.confirm("CLEAR ALL GAME DATA? This deletes all teams, completions, deposits, and check-ins. Stores are kept. This cannot be undone.")) return;
-    if (!window.confirm("Are you absolutely sure? All team data will be permanently deleted.")) return;
+    const label = window.prompt("Enter a label for this game's archive (e.g. 2026). Photos will be saved under this name.", new Date().getFullYear().toString());
+    if (label === null) return; // cancelled
+    if (!window.confirm(`Archive photos as "${label || new Date().getFullYear()}" and clear all game data? Teams, deposits, and non-photo records will be deleted. This cannot be undone.`)) return;
     await act(async () => {
-      await apiFetch("/admin/reset-game", { method: "POST" });
+      await apiFetch("/admin/reset-game", { method: "POST", body: JSON.stringify({ gameLabel: label || undefined }) });
       loadTeams();
       loadCompletions();
     });
@@ -322,7 +323,7 @@ export default function AdminPage() {
           <div className="card" style={{ borderColor: "#c62828" }}>
             <div className="card__title" style={{ color: "#c62828" }}>Reset All Game Data</div>
             <div className="card__meta" style={{ margin: "0.5rem 0 1rem" }}>
-              Deletes all teams, completions, store deposits, and check-ins. Stores are preserved. Run this before game day to start fresh.
+              Archives all photos under a game label, then deletes all teams, deposits, and non-photo records. Stores are preserved. Run this before the next game. Archived photos remain visible at <a href="/archive">/archive</a>.
             </div>
             <button className="btn btn--danger" onClick={resetGame}>
               Clear All Game Data
