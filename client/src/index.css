@@ -383,6 +383,42 @@ input, textarea {
   padding: 4px 0;
 }
 
+.public-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #c8102e;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.public-header__title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.public-header__links {
+  display: flex;
+  gap: 14px;
+}
+
+.public-header__links a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+.public-header__links a.active,
+.public-header__links a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 .back-link {
   display: inline-block;
   margin-bottom: 10px;

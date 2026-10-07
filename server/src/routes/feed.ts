@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { prisma } from "../db";
-import { requireAuth } from "../middleware/auth";
+import { optionalAuth } from "../middleware/auth";
 
 const router = Router();
 
-router.use(requireAuth);
+router.use(optionalAuth);
 
 router.get("/", async (req, res) => {
   const { team } = req.query as { team?: string };

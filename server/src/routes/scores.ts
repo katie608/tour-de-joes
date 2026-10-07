@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { prisma } from "../db";
-import { requireAuth } from "../middleware/auth";
+import { optionalAuth } from "../middleware/auth";
 import { computeStoreStatus } from "../lib/storeStatus";
 
 const router = Router();
 
-router.use(requireAuth);
+router.use(optionalAuth);
 
 router.get("/", async (_req, res) => {
   const teams = await prisma.team.findMany();

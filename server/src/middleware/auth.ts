@@ -37,6 +37,24 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   next();
 }
 
+/** Populates req.team / req.isAdmin if a valid token is present, but does not reject unauthenticated requests. */
+export async function optionalAuth(req: Request, _res: Response, next: NextFunction) {
+  const header = req.headers.authorization;
+  const token = header?.startsWith("Bearer ") ? header.slice(7) : undefined;
+  if (token) {
+    const session = await prisma.sessionToken.findUnique({ where: { token } });
+    if (session) {
+      if (session.teamId === null) {
+        req.isAdmin = true;
+      } else {
+        const team = await prisma.team.findUnique({ where: { id: session.teamId } });
+        if (team) req.team = { id: team.id, name: team.name, unspentPoints: team.unspentPoints };
+      }
+    }
+  }
+  next();
+}
+
 /** Requires the session to belong to the admin account. */
 export async function requireAdmin(req: Request, res: Response, next: NextFunction) {
   await requireAuth(req, res, () => {
