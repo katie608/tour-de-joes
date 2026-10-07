@@ -103,10 +103,10 @@ export default function ChallengesPage() {
               <button
                 onClick={(e) => togglePin(e, c.id)}
                 title={isPinned ? "Unpin" : "Pin to top"}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.1rem", padding: "2px 4px", color: isPinned ? "#c8102e" : "#ccc", flexShrink: 0 }}
+                style={{ background: "none", border: "none", cursor: "pointer", fontSize: "1.2rem", padding: "2px 4px", color: isPinned ? "#c8102e" : "#ccc", flexShrink: 0, lineHeight: 1 }}
                 aria-label={isPinned ? "Unpin" : "Pin to top"}
               >
-                📌
+                {isPinned ? "★" : "☆"}
               </button>
               <button
                 onClick={(e) => toggleExpand(e, c.id)}
